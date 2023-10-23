@@ -1,0 +1,16 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated"
+  },
+  "ConfluentCloud": {
+    "BootstrapServers": "localhost:9092",
+    "SaslUsername": "username",
+    "SaslPassword": "password",
+    "SecurityProtocol": "SaslSsl",
+    "SaslMechanism": "Plain",
+    "Topic": "topic-demo",
+    "Partition": "order"
+  }
+}
