@@ -1,4 +1,5 @@
 using Confluent.Kafka;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -9,12 +10,16 @@ var host = new HostBuilder()
     {
         var currentDirectory = hostingContext.HostingEnvironment.ContentRootPath;
         config.SetBasePath(currentDirectory)
-            .AddJsonFile("settings.json", optional: true, reloadOnChange: true)
-            .AddEnvironmentVariables();
-        config.Build();
+            .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
+            .AddJsonFile("settings.json", optional: false, reloadOnChange: true)
+            .AddEnvironmentVariables()
+            .Build();
     })
-    .ConfigureServices((ctx, svc) =>
+    .ConfigureServices((context, services) =>
     {
+        services.AddApplicationInsightsTelemetryWorkerService();
+        services.ConfigureFunctionsApplicationInsights();
+
         // https://docs.confluent.io/platform/current/installation/configuration/producer-configs.html
         var producerConfig = new ProducerConfig
         {
@@ -32,8 +37,8 @@ var host = new HostBuilder()
             // The amount of time to wait before attempting to retry a failed request to a given topic partition
             RetryBackoffMs = 1000
         };
-        ctx.Configuration.GetSection("ConfluentCloud").Bind(producerConfig);
-        svc.AddSingleton<ProducerConfig>(producerConfig);
+        context.Configuration.GetSection("ConfluentCloud").Bind(producerConfig);
+        services.AddSingleton<ProducerConfig>(producerConfig);
     })
     .Build();
 

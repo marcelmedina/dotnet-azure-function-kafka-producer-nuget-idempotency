@@ -1,0 +1,11 @@
+﻿POST http://localhost:7131/api/SendMessage
+
+{
+    "id": "1",
+    "description": "MILK",
+    "status": "PENDING",
+    "date": "2023-11-22T00:00:00.000Z",
+    "currency": "NZD",
+    "amount": 4.50,
+    "customerId": "1"
+}
